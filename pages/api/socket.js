@@ -11,7 +11,13 @@ const SocketHandler = (req, res) => {
 
         io.on('connection', (socket) => {
             console.log('New client connected')
+            socket.on('join-room', (roomId,userId) => {
+                console.log(`A NEW USER WITH ${userId} JOINED ROOM ${roomId}`);
+                socket.join(roomId);
+                socket.broadcast.to(roomId).emit('user-connected', userId);
+            })
         })
+
     }
     res.end();
 }
