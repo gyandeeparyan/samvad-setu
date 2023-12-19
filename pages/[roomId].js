@@ -17,6 +17,9 @@ const Room = () => {
   const { stream } = useMediaStream();
   const {players,setPlayers,playerHighlighted,playerNonHighlighted,toggleAudio,leaveRoom,toggleVideo}=usePlayer(myId,roomId,peer);
   const [users, setUsers] = useState([])
+
+
+
   useEffect(() => {
     if (!socket || !stream || !peer) return;
     const handleUserConnected = (newUser) => {
@@ -94,6 +97,7 @@ const Room = () => {
     const handleUserLeave = (userId) => {
       console.log(`user ${userId} is leaving the room`);
       users[userId]?.close()
+     
       const playersCopy = cloneDeep(players);
       delete playersCopy[userId];
       setPlayers(playersCopy);

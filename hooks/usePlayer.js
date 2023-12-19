@@ -12,10 +12,18 @@ const router =useRouter()
   delete playersCopy[myId];
   const playerNonHighlighted = playersCopy;
 
+  function stopBothVideoAndAudio(stream) {
+    stream.getTracks().forEach((track) => {
+        if (track.readyState == 'live') {
+            track.stop();
+        }
+    });
+}
   const leaveRoom = () => {
     socket.emit('leave', myId, roomId)
     console.log("leaving room", roomId)
     peer?.disconnect();
+    stopBothVideoAndAudio(players[myId].url)
     router.push('/')
 }
 
