@@ -3,7 +3,7 @@
 }
 
 .active {
-  @apply absolute left-0 right-0 mt-[300px] md:mt-[10px] rounded-2xl  object-cover;
+  @apply absolute left-0 right-0 mt-[20px] md:mt-[10px] rounded-2xl  object-cover;
 }
 
 .notActive {
