@@ -32,12 +32,15 @@ const Room = () => {
   } = usePlayer(myId, roomId, peer);
   const [users, setUsers] = useState([]);
   const leaveAudioURL = `https://res.cloudinary.com/dzbmc0pit/video/upload/v1703051749/vea2o3irg4so2f6lan0r.mp3`;
-  const leaveAudio = new Audio(leaveAudioURL);
+  const [leaveAudio,setLeaveAudio]=useState(null)
+  const [joinAudio,setJoinAudio]= useState(null)
   const { frontFacing,screenShare } = useApp();
   const joinAudioURL = `https://res.cloudinary.com/dzbmc0pit/video/upload/v1703051513/inib5q5dohfvgynlsyra.mp3`;
-  const joinAudio = new Audio(joinAudioURL);
+ 
 
   useEffect(() => {
+    setLeaveAudio(new Audio(leaveAudioURL));
+    setJoinAudio(new Audio(joinAudioURL));
     if (!socket || !stream || !peer) return;
     const handleUserConnected = (newUser) => {
       console.log(`USER CONNECTED WITH USERID ${newUser}`);
@@ -131,6 +134,8 @@ const Room = () => {
   }, [players, setPlayers, socket, users]);
 
   useEffect(() => {
+
+
     if (!stream || !myId) return;
     console.log(`SETTING STREAM WITH PEER ID ${myId}`);
     setPlayers((prev) => ({
