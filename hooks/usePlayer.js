@@ -25,10 +25,10 @@ const usePlayer = (myId, roomId, peer) => {
   //   });
   // }
 
-  useEffect(()=>{
-    setLeaveAudio(new Audio(leaveAudioURL));
+  // useEffect(()=>{
+  //   setLeaveAudio(new Audio(leaveAudioURL));
    
-  },[])
+  // },[])
   const leaveRoom = () => {
     socket.emit("leave", myId, roomId);
     console.log("leaving room", roomId);

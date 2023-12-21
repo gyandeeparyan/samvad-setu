@@ -39,8 +39,7 @@ const Room = () => {
  
 
   useEffect(() => {
-    setLeaveAudio(new Audio(leaveAudioURL));
-    setJoinAudio(new Audio(joinAudioURL));
+   
     if (!socket || !stream || !peer) return;
     const handleUserConnected = (newUser) => {
       console.log(`USER CONNECTED WITH USERID ${newUser}`);
