@@ -10,69 +10,87 @@ import { useRouter } from "next/router";
 import { cloneDeep } from "lodash";
 import { useState } from "react";
 import CopySection from "@/components/CopySection";
+import { useApp } from "@/context/appContext";
+
+import useDisplayMedia from "./../hooks/useDisplayMedia";
 const Room = () => {
   const socket = useSocket();
-  const {roomId}=useRouter().query
+  const { roomId } = useRouter().query;
   const { peer, myId } = usePeer();
   const { stream } = useMediaStream();
-  const {players,setPlayers,playerHighlighted,playerNonHighlighted,toggleAudio,leaveRoom,toggleVideo}=usePlayer(myId,roomId,peer);
-  const [users, setUsers] = useState([])
+  const { screenStream } = useDisplayMedia();
 
 
+  const {
+    players,
+    setPlayers,
+    playerHighlighted,
+    playerNonHighlighted,
+    toggleAudio,
+    leaveRoom,
+    toggleVideo,
+  } = usePlayer(myId, roomId, peer);
+  const [users, setUsers] = useState([]);
+  const leaveAudioURL = `https://res.cloudinary.com/dzbmc0pit/video/upload/v1703051749/vea2o3irg4so2f6lan0r.mp3`;
+  const leaveAudio = new Audio(leaveAudioURL);
+  const { frontFacing,screenShare } = useApp();
+  const joinAudioURL = `https://res.cloudinary.com/dzbmc0pit/video/upload/v1703051513/inib5q5dohfvgynlsyra.mp3`;
+  const joinAudio = new Audio(joinAudioURL);
 
   useEffect(() => {
     if (!socket || !stream || !peer) return;
     const handleUserConnected = (newUser) => {
       console.log(`USER CONNECTED WITH USERID ${newUser}`);
-      const call = peer.call(newUser,stream);
+      joinAudio.play();
+      const call = peer.call(newUser, stream);
       call.on("stream", (userStream) => {
         console.log(`INCOMING STREAM FROM USER ${newUser}`);
-        setPlayers((prev)=>({
+        joinAudio.play();
+        setPlayers((prev) => ({
           ...prev,
-          [newUser]:{
-            url:userStream,
-            muted:true,
-            playing:true,
-          }
-            }))
+          [newUser]: {
+            url: userStream,
+            muted: true,
+            playing: true,
+          },
+        }));
 
-            setUsers((prev)=>({
-              ...prev,
-              [newUser]:call
-            }))
-      })
+        setUsers((prev) => ({
+          ...prev,
+          [newUser]: call,
+        }));
+      });
     };
 
     socket.on("user-connected", handleUserConnected);
     return () => {
       socket.off("user-connected", handleUserConnected);
     };
-  }, [peer, stream, socket, setPlayers]);
+  }, [peer, stream, socket, setPlayers, joinAudio]);
 
-  useEffect(()=>{
-    if(!peer || !stream) return;
-    peer.on('call',(call)=>{
-        const {peer:callerId}=call;
-        call.answer(stream)
-        call.on('stream',(userStream)=>{
-            console.log(`INCOMING STREAM FROM USER ${callerId}`);
-            setPlayers((prev)=>({
-              ...prev,
-              [callerId]:{
-                url:userStream,
-                muted:true,
-                playing:true,
-              }
-                }))
+  useEffect(() => {
+    if (!peer || !stream) return;
+    peer.on("call", (call) => {
+      const { peer: callerId } = call;
+      call.answer(stream);
+      call.on("stream", (userStream) => {
+        console.log(`INCOMING STREAM FROM USER ${callerId}`);
+        setPlayers((prev) => ({
+          ...prev,
+          [callerId]: {
+            url: userStream,
+            muted: true,
+            playing: true,
+          },
+        }));
 
-                setUsers((prev)=>({
-                  ...prev,
-                  [callerId]:call
-                }))
-        })
-    })
-    
-  },[peer, setPlayers, stream])
+        setUsers((prev) => ({
+          ...prev,
+          [callerId]: call,
+        }));
+      });
+    });
+  }, [peer, setPlayers, stream]);
 
   useEffect(() => {
     if (!socket) return;
@@ -96,12 +114,12 @@ const Room = () => {
 
     const handleUserLeave = (userId) => {
       console.log(`user ${userId} is leaving the room`);
-      users[userId]?.close()
-     
+      users[userId]?.close();
+      leaveAudio.play();
       const playersCopy = cloneDeep(players);
       delete playersCopy[userId];
       setPlayers(playersCopy);
-    }
+    };
     socket.on("toggle-audio", handleToggleAudio);
     socket.on("toggle-video", handleToggleVideo);
     socket.on("leave", handleUserLeave);
@@ -112,22 +130,21 @@ const Room = () => {
     };
   }, [players, setPlayers, socket, users]);
 
-useEffect(()=>{
-  if(!stream || !myId) return;
-  console.log(`SETTING STREAM WITH PEER ID ${myId}`);
-  setPlayers((prev)=>({
-...prev,
-[myId]:{
-  url:stream,
-  muted:true,
-  playing:true,
-}
-  }))
-},[myId, setPlayers, stream])
+  useEffect(() => {
+    if (!stream || !myId) return;
+    console.log(`SETTING STREAM WITH PEER ID ${myId}`);
+    setPlayers((prev) => ({
+      ...prev,
+      [myId]: {
+        url: (screenShare && screenStream)? screenStream : stream,
+        muted: true,
+        playing: true,
+      },
+    }));
+  }, [myId, setPlayers, stream, frontFacing,screenStream,screenShare]);
 
   return (
     <>
-   
       <div className={styles.activePlayerContainer}>
         {playerHighlighted && (
           <Player
@@ -152,9 +169,14 @@ useEffect(()=>{
           );
         })}
       </div>
-      <CopySection roomId={roomId}/>
-      <Bottom muted={playerHighlighted?.muted} playing={playerHighlighted?.playing} toggleAudio={toggleAudio} toggleVideo={toggleVideo} leaveRoom={leaveRoom}/>
-      
+      <CopySection roomId={roomId} />
+      <Bottom
+        muted={playerHighlighted?.muted}
+        playing={playerHighlighted?.playing}
+        toggleAudio={toggleAudio}
+        toggleVideo={toggleVideo}
+        leaveRoom={leaveRoom}
+      />
     </>
   );
 };

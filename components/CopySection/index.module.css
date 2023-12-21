@@ -1,7 +1,6 @@
 .copyContainer {
-    @apply flex flex-col absolute text-white border border-white rounded p-2;
-    left: 30px;
-    bottom: 100px;
+    @apply  absolute font-bold  text-white border bottom-[90px] left-[15px] md:bottom-[120px] md:left-[190px] border-white rounded p-2;
+   
   
     hr {
       @apply my-1;

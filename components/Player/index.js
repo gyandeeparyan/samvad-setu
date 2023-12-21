@@ -7,17 +7,16 @@ const Player = (props) => {
   const { playerId, url, muted, playing, isActive,peer } = props;
   const router=useRouter()
   return (
-    <div
-      className={
-        (cx(styles.playerContainer),
-        {
-          [styles.notActive]: !isActive,
-          [styles.active]: isActive,
-          [styles.notPlaying]: !playing,
-        })
-      }>
+    <div className="grid-cols-2 md:grid-cols-1">
+ <div
+    className={cx(styles.playerContainer, {
+      [styles.notActive]: !isActive,
+      [styles.active]: isActive,
+      [styles.notPlaying]: !playing,
+    })}>
       {playing ? (
         <ReactPlayer
+          
           url={url}
           muted={muted}
           playing={playing}
@@ -25,7 +24,7 @@ const Player = (props) => {
           height='100%'
         />
       ) : (
-        <UserSquare2 className={styles.user} size={isActive ? 400 : 150} />
+        <UserSquare2 className={styles.user} size={isActive ? 400 : 100} />
       )}
 
       {!isActive ? (
@@ -36,6 +35,8 @@ const Player = (props) => {
         )
       ) : undefined}
     </div>
+    </div>
+   
   );
 };
 

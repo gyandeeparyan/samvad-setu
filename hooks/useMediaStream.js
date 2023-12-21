@@ -1,31 +1,65 @@
-import { set } from "lodash";
 import { useState, useEffect, useRef } from "react";
+import usePlayer from "./usePlayer";
+import { useApp } from "@/context/appContext";
 
 const useMediaStream = () => {
-  const [state, setState] = useState(null);
+  const [stream, setStream] = useState(null);
   const isStreamSet = useRef(false);
+  const mediaStreamRef = useRef(null);
+  const { frontFacing } = useApp();
 
   useEffect(() => {
-    if(isStreamSet.current) return;
-    isStreamSet.current=true;
-    (async function initStream(){
-        try {
-            const stream=await navigator.mediaDevices.getUserMedia({
-                audio:true,
-                video:true,
-            })
-            console.log("SETTING YOUR STREAM");
-            setState(stream);
-        } catch (error) {
-            console.log("ERROR IN MEDIA NAVIGATOR" ,error);
-        }
-    })()
+    const initStream = async () => {
+      try {
+        const constraints = {
+          audio: true,
+          video: {
+            facingMode: frontFacing ? 'user' : 'environment',
+          },
+        };
 
-  }, []);
+        console.log("Trying to get user media with constraints:", constraints);
+
+        // Stop the current stream if it exists
+        if (mediaStreamRef.current) {
+          const tracks = mediaStreamRef.current.getTracks();
+          tracks.forEach((track) => track.stop());
+
+        }
+
+        // Get a new stream
+        const userMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+        console.log("SETTING YOUR STREAM");
+        console.log(frontFacing);
+        setStream(userMediaStream);
+
+        // Save the stream reference for cleanup
+        mediaStreamRef.current = userMediaStream;
+      } catch (error) {
+        console.error("ERROR IN MEDIA NAVIGATOR", error);
+      }
+    };
+
+    if (typeof window !== 'undefined' && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      console.log("getUserMedia is supported on this device");
+      initStream();
+    } else {
+      console.error("getUserMedia is not supported on this device");
+    }
+
+    return () => {
+      // Stop the current stream when the component unmounts
+      if (mediaStreamRef.current) {
+        const tracks = mediaStreamRef.current.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+  }, [frontFacing]);
 
   return {
-    stream: state,
-  }
+    stream,
+  };
 };
 
 export default useMediaStream;
