@@ -46,6 +46,7 @@ const Bottom = ({
         <PhoneOff size={55} className={cx(styles.icon)} onClick={leaveRoom} />
         {screenShare ? (
           <Cast
+            
             onClick={toggleScreenShare}
             className={cx(styles.icon, styles.active)}
             size={55}

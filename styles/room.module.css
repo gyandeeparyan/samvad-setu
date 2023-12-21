@@ -1,14 +1,13 @@
 .activePlayerContainer {
-    @apply absolute w-9/12 left-0 right-0 mx-auto;
-    top: 20px;
-    bottom: 50px;
-    height: calc(100vh - 20px - 100px);
-  }
-  
-  .inActivePlayerContainer {
-    @apply absolute flex flex-col overflow-y-auto;
-    width: 200px;
-    height: calc(100vh - 20px);
-    right: 20px;
-    top: 20px;
-  }
+  @apply absolute w-9/12 left-0 right-0 mx-auto;
+  top: 20px;
+  bottom: 50px;
+  height: calc(100vh - 20px - 100px);
+}
+
+.inActivePlayerContainer {
+  @apply absolute grid grid-cols-2 top-[377px] right-[65px] gap-[10px] w-[220px] md:w-[200px] md:top-[20px] md:right-[20px]  md:grid-cols-1 overflow-y-auto;
+
+  height: calc(100vh - 20px);
+
+}

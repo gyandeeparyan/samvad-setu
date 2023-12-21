@@ -32,7 +32,7 @@ const usePlayer = (myId, roomId, peer) => {
   const leaveRoom = () => {
     socket.emit("leave", myId, roomId);
     console.log("leaving room", roomId);
-    leaveAudio.play();
+    // leaveAudio.play();
     peer?.disconnect();
     // stopBothVideoAndAudio(players[myId].url);
     router.push("/");

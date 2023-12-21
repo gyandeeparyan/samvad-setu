@@ -43,11 +43,11 @@ const Room = () => {
     if (!socket || !stream || !peer) return;
     const handleUserConnected = (newUser) => {
       console.log(`USER CONNECTED WITH USERID ${newUser}`);
-      joinAudio.play();
+      // joinAudio.play();
       const call = peer.call(newUser, stream);
       call.on("stream", (userStream) => {
         console.log(`INCOMING STREAM FROM USER ${newUser}`);
-        joinAudio.play();
+        // joinAudio.play();
         setPlayers((prev) => ({
           ...prev,
           [newUser]: {
@@ -117,7 +117,7 @@ const Room = () => {
     const handleUserLeave = (userId) => {
       console.log(`user ${userId} is leaving the room`);
       users[userId]?.close();
-      leaveAudio.play();
+      // leaveAudio.play();
       const playersCopy = cloneDeep(players);
       delete playersCopy[userId];
       setPlayers(playersCopy);
