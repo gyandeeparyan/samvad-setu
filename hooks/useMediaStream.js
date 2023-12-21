@@ -13,9 +13,7 @@ const useMediaStream = () => {
       try {
         const constraints = {
           audio: true,
-          video: {
-            facingMode: frontFacing ? 'user' : 'environment',
-          },
+          video: true,
         };
 
         console.log("Trying to get user media with constraints:", constraints);
@@ -24,11 +22,12 @@ const useMediaStream = () => {
         if (mediaStreamRef.current) {
           const tracks = mediaStreamRef.current.getTracks();
           tracks.forEach((track) => track.stop());
-
         }
 
         // Get a new stream
-        const userMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        const userMediaStream = await navigator.mediaDevices.getUserMedia(
+          constraints
+        );
 
         console.log("SETTING YOUR STREAM");
         console.log(frontFacing);
@@ -41,7 +40,11 @@ const useMediaStream = () => {
       }
     };
 
-    if (typeof window !== 'undefined' && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (
+      typeof window !== "undefined" &&
+      navigator.mediaDevices &&
+      navigator.mediaDevices.getUserMedia
+    ) {
       console.log("getUserMedia is supported on this device");
       initStream();
     } else {
