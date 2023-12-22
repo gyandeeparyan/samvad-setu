@@ -1,5 +1,5 @@
 .copyContainer {
-    @apply  absolute font-bold  text-white border bottom-[90px] left-[15px] md:bottom-[120px] md:left-[190px] border-white rounded p-2;
+    @apply  absolute font-bold  text-white border bottom-[90px] left-0 right-0 mx-4 md:w-[25%] md:bottom-[120px] md:left-[190px] border-white rounded-full p-2;
    
   
     hr {
