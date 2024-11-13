@@ -44,20 +44,20 @@ const Bottom = ({
           />
         )}
         <PhoneOff size={55} className={cx(styles.icon)} onClick={leaveRoom} />
-        {screenShare ? (
-          <Cast
+        // {screenShare ? (
+        //   <Cast
             
-            onClick={toggleScreenShare}
-            className={cx(styles.icon, styles.active)}
-            size={55}
-          />
-        ) : (
-          <Cast
-            size={55}
-            onClick={toggleScreenShare}
-            className={cx(styles.icon)}
-          />
-        )}
+        //     onClick={toggleScreenShare}
+        //     className={cx(styles.icon, styles.active)}
+        //     size={55}
+        //   />
+        // ) : (
+        //   <Cast
+        //     size={55}
+        //     onClick={toggleScreenShare}
+        //     className={cx(styles.icon)}
+        //   />
+        // )}
       </div>
     </>
   );
